@@ -1,88 +1,72 @@
-// console.log("🌎");
-
-// fetch(" http://localhost:3000/ramens")
-//   .then((res) => res.json())
-//   .then((data) => showRamenMenu(data))
-//   .catch((error) => console.error("ERROR️‍ 🔥:", error));
-
-// //display all ramen images in menu
-// function showRamenMenu(ramenArr) {
-//   const menu = document.getElementById("ramen-menu");
-
-//   for (let i = 0; i < ramenArr.length; i++) {
-//     const ramen = ramenArr[i];
-//     const img = document.createElement("img");
-
-//     img.src = ramen.image;
-//     img.setAttribute("ramen-id", ramen.id);
-//     img.addEventListener("click", handleShowDetail);
-//     menu.appendChild(img);
-//     img.style.border = "black solid 11px";
-//   }
-// }
-
-// //display ramen info
-// function handleShowDetail(e) {
-//   const img = e.target;
-//   const id = img.getAttribute("ramen-id");
-
-//   fetch(`http://localhost:3000/ramens/${id}`)
-//     .then((res) => res.json())
-//     .then((data) => {
-//       showRamenDetails(data);
-//     })
-//     .catch((error) => console.error("ERROR️‍ ❌:", error));
-// }
-
-// function showRamenDetails(data) {
-//   const img = document.querySelector(".detail-image");
-//   img.src = data.image;
-//   img.alt = data.name;
-
-//   document.querySelector(".name").textContent = data.name;
-//   document.querySelector(".restaurant").textContent = data.restaurant;
-//   document.querySelector("#rating-display").textContent = data.rating;
-//   document.querySelector("#comment-display").textContent = data.comment;
-// }
-
-// //form
-// const form = document.querySelector("#new-ramen");
-
-// form.addEventListener("submit", (event) => {
-//   event.preventDefault();
-
-//   const url = event.target[2].value;
-
-//   const img = document.createElement("img");
-//   img.src = url;
-//   img.alt = event.target[0].value;
-
-//   const menu = document.querySelector("#ramen-menu");
-
-//   menu.appendChild(img);
-//   form.reset();
-// });
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//local of API
 const ramenAPI = "http://localhost:3000/ramens";
+
+//vars to grab els of HTML
 const ramenMenu = document.querySelector("#ramen-menu");
+const ramenDetail = document.querySelector("#ramen-detail"); //this has an img, name & restaurant name as a placeholder
+const form = document.querySelector("form");
 
 fetch(ramenAPI) //goes to api
   .then((res) => res.json()) //access json data
-  .then(displayRamenImgs) //display that data with CB Fxn (create later)
+  .then(addRamenToPage) //display that data with CB Fxn (create later)
   .catch((error) => console.log("ERROR️‍🔥:", error));
 
 //fxn used in fetch ^^^
 //goes through ramen Array (how data was store in JSON)
 // for each item in arr add the image to the page using CB fxn
-function displayRamenImgs(ramenArr) {
-  ramenArr.forEach(addRamenImgToPage);
+function addRamenToPage(ramenArr) {
+  //   console.log(ramenArr);
+  ramenArr.forEach(displayRamenObj);
 }
 
-//fxn used in displayRamenImgs ^^^
+//fxn used in addRamenToPage ^^^
 //goes through ramenArr(input of fxn above)
-function addRamenImgToPage(ramen) {
+function displayRamenObj(ramen) {
   const ramenImg = document.createElement("img"); // creates new img el called ramenImg
   ramenImg.src = ramen.image; // gives that el a src image from the json
   ramenMenu.append(ramenImg); //adds this image to the ramenMenu (put in specific place)
-  //the 1st class fxn above (displayRamenImgs) will run this fxn for every item in array
+  //the 1st class fxn above (addRamenToPage) will run this fxn for every item in array
+
+  //fxn created to deal with click image to change things in ramenDetail div
+  ramenImg.addEventListener("click", () => {
+    console.log("🪐", ramen);
+    displayRamenDetails(ramen); //this function is declared below and takes in the
+    //specifically clicked el in ramenArr
+  });
+}
+
+//This fxn uses dynamic JS to change teh placeholder info of the
+//clicked ramen pics. changing the image, name, rest name, comments, and rating
+function displayRamenDetails(ramen) {
+  const detailImg = document.querySelector("#ramen-detail-image"); //grabs the image and dynamically changes the details
+  detailImg.src = ramen.image; //images are special and need extra info (src and alt)
+  detailImg.alt = ramen.name;
+
+  document.querySelector("#ramen-detail-name").textContent = ramen.name; //these take in the details of the currently clicked ramen
+  document.querySelector("#ramen-detail-restaurant").textContent = //and push them into where the placeholder text was
+    ramen.restaurant;
+  document.querySelector("#rating-display").textContent = ramen.rating;
+  document.querySelector("#comment-display").textContent = ramen.comment;
+}
+
+form.addEventListener("submit", addNewRamen); //event handler on the form's submit button
+
+function addNewRamen(e) {
+  e.preventDefault();
+  console.log("🤘", e.target.name.value); //the specific obj clicked on (e.target). then attribute.value of obj
+
+  const newRamen = {
+    name: e.target.name.value,
+    rating: e.target.rating.value,
+    image: e.target.image.value, //this new image is given the src and alt attributes in displayRamenDetails Fxn
+    restaurant: e.target.restaurant.value,
+    comment: e.target["new-comment"].name.value, //used bracket notation b/c key of object is annoyingly named with a "-"
+  };
+
+  //re-use this already made function to get the new ramen obj to display on page
+  displayRamenObj(newRamen);
+
+  //reset the form for future used
+  form.reset();
 }

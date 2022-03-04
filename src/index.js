@@ -1,15 +1,15 @@
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////🪐🪐🪐🪐🪐GET INTO IT!🪐🪐🪐🪐🪐🪐//////////////////////////////////////////////////
 //local of API
 const ramenAPI = "http://localhost:3000/ramens";
 
 //vars to grab els of HTML
-const ramenMenu = document.querySelector("#ramen-menu");
+const menu = document.querySelector("#ramen-menu");
 const ramenDetail = document.querySelector("#ramen-detail"); //this has an img, name & restaurant name as a placeholder
 const form = document.querySelector("form");
 
 fetch(ramenAPI) //goes to api
-  .then((res) => res.json()) //access json data
-  .then(addRamenToPage) //display that data with CB Fxn (create later)
+  .then((res) => res.json()) //access json data (✅ GET)
+  .then(addRamenToPage) //display that data with CB Fxn (create later) (✅ GET)
   .catch((error) => console.log("ERROR️‍🔥:", error));
 
 //fxn used in fetch ^^^
@@ -25,12 +25,12 @@ function addRamenToPage(ramenArr) {
 function displayRamenObj(ramen) {
   const ramenImg = document.createElement("img"); // creates new img el called ramenImg
   ramenImg.src = ramen.image; // gives that el a src image from the json
-  ramenMenu.append(ramenImg); //adds this image to the ramenMenu (put in specific place)
+  menu.append(ramenImg); //adds this image to the menu (put in specific place)
   //the 1st class fxn above (addRamenToPage) will run this fxn for every item in array
 
   //fxn created to deal with click image to change things in ramenDetail div
   ramenImg.addEventListener("click", () => {
-    console.log("🪐", ramen);
+    //console.log("🪐", ramen);
     displayRamenDetails(ramen); //this function is declared below and takes in the
     //specifically clicked el in ramenArr
   });
@@ -54,7 +54,7 @@ form.addEventListener("submit", addNewRamen); //event handler on the form's subm
 
 function addNewRamen(e) {
   e.preventDefault();
-  console.log("🤘", e.target.name.value); //the specific obj clicked on (e.target). then attribute.value of obj
+  console.log("🤘 Name added:\n", e.target.name.value); //the specific obj clicked on (e.target). then attribute.value of obj
 
   const newRamen = {
     name: e.target.name.value,
